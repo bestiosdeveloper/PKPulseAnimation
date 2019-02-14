@@ -3,9 +3,6 @@
 A Swift based helper class that will provide the pulse animation.
 
 
-![preview](https://github.com/kumarpramod017/PKLoader/blob/master/PKLoader.gif)
-
-
 ## Requirements
 
 - iOS 10.0+
