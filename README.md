@@ -34,7 +34,7 @@ self.containerView.layer.insertSublayer(self.pulsAnimation, below: self.button.l
 
 ## Licence
 
-PKLoader is released under the MIT license.
+PKPulseAnimation is released under the MIT license.
 
 
 
