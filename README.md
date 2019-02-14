@@ -24,50 +24,20 @@ Just download the file and place in your Xcode project.
 Example:
 
 ```swift
-//If you want to show the loader on window/full screen, Use:
-PKLoader.shared.startAnimating()
 
-//If you want to convert any UIView, UIButton, UILabel etc. in to loader, Use:
-PKLoader.shared.startAnimating(onView: <instance_of_your_view>)
+//create a object for PKPulseAnimation.
+private var pulsAnimation = PKPulseAnimation()
+
+//configure the PKPulseAnimation object
+//`containerView` is the UIView that contains `button` as UIButton inside it.
+self.pulsAnimation.numPulse = 6
+self.pulsAnimation.radius = 100.0
+self.pulsAnimation.currentAnimation = .line
+self.pulsAnimation.lineWidth = 2.0
+self.pulsAnimation.lineColor = UIColor.red
+self.pulsAnimation.backgroundColor = UIColor.clear
+self.containerView.layer.insertSublayer(self.pulsAnimation, below: self.button.layer)
 ```
-
-
-#### For Stop Loading
-
-1) Just call `stopAnimating()` method with `shared` instance of `PKLoader`
-
-Example:
-
-```swift
-PKLoader.shared.stopAnimating()
-```
-
-## Configuration To Chnage Animation 
-
-To change the default configuration of the loader just change the values of  `PKLoaderSettings`, Like:
-
-### Important Property:
-
-1) `indicatorType` used to decide the loader animation type. Default: `PKLoader.IndicatorType.ballRotateChase`
-
-#### Properties Only Useful in Case of Full Screen Loader
-
-1) `backgroundSize` used to give the size for the background view.  Default: `CGSize(width: 100.0, height: 100.0)`
-
-2) `backgroundColor` used to give the background color for the background view. Default: `UIColor.white`
-
-3) `cornerRadius` used to give the corner radius for the background view. Default: `10.0`
-
-4) `indicatorSize` used to give the default size for the indicator animation.  Default: `CGSize(width: 20.0, height: 20.0)`
-
-5) `indicatorColor` used to give the color for the indicator animation.  Default: `UIColor.gray`
-
-#### Properties Useful in Both Case 
-
-1) `indicatorPadding` used to give the padding for the indicator animation.  Default: `UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)`
-
-1) `shouldMakeRound` decides weather make the passed view circular or not.  Default: `true`
-
 
 ## Licence
 
