@@ -14,10 +14,6 @@ Just download the file and place in your Xcode project.
 
 ## Usage
 
-#### For Start Loading
-
-1) Just call `startAnimating()` method with `shared` instance of `PKLoader`
-
 Example:
 
 ```swift
