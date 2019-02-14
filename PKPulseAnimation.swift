@@ -13,6 +13,11 @@ internal let kPulseAnimationKey = "pulse"
 
 open class PKPulseAnimation: CAReplicatorLayer, CAAnimationDelegate {
     
+    public enum AnimationType {
+        case opacity
+        case line
+    }
+    
     fileprivate let pulse = CALayer()
     fileprivate var animationGroup: CAAnimationGroup!
     fileprivate var alpha: CGFloat = 0.45
@@ -39,6 +44,12 @@ open class PKPulseAnimation: CAReplicatorLayer, CAAnimationDelegate {
     
     // MARK: - Public Properties
     /// The number of pulse.
+    open var currentAnimation: AnimationType = AnimationType.line
+    
+    @objc open var lineWidth: CGFloat = 4.0
+    
+    @objc open var lineColor: UIColor = .black
+    
     @objc open var numPulse: Int = 1 {
         didSet {
             if numPulse < 1 {
@@ -89,7 +100,7 @@ open class PKPulseAnimation: CAReplicatorLayer, CAAnimationDelegate {
     @objc open var pulseInterval: TimeInterval = 0
     
     /// A function describing a timing curve of the animation.
-    @objc open var timingFunction: CAMediaTimingFunction? = CAMediaTimingFunction(name: kCAMediaTimingFunctionDefault) {
+    @objc open var timingFunction: CAMediaTimingFunction? = CAMediaTimingFunction(name: CAMediaTimingFunctionName.default) {
         didSet {
             if let animationGroup = animationGroup {
                 animationGroup.timingFunction = timingFunction
@@ -115,17 +126,15 @@ open class PKPulseAnimation: CAReplicatorLayer, CAAnimationDelegate {
         
         instanceDelay = 1
         repeatCount = MAXFLOAT
-        backgroundColor = UIColor(
-            red: 0, green: 0.455, blue: 0.756, alpha: 0.45).cgColor
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(save),
-                                               name: NSNotification.Name.UIApplicationDidEnterBackground,
+                                               name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(resume),
-                                               name: NSNotification.Name.UIApplicationWillEnterForeground,
+                                               name: UIApplication.willEnterForegroundNotification,
                                                object: nil)
     }
     
@@ -146,6 +155,9 @@ open class PKPulseAnimation: CAReplicatorLayer, CAAnimationDelegate {
     fileprivate func setupPulse() {
         pulse.contentsScale = UIScreen.main.scale
         pulse.opacity = 0
+        
+        
+        
         addSublayer(pulse)
         updatePulse()
     }
@@ -156,13 +168,26 @@ open class PKPulseAnimation: CAReplicatorLayer, CAAnimationDelegate {
         scaleAnimation.toValue = 1.0
         scaleAnimation.duration = animationDuration
         
+        animationGroup = CAAnimationGroup()
+        
         let opacityAnimation = CAKeyframeAnimation(keyPath: "opacity")
         opacityAnimation.duration = animationDuration
         opacityAnimation.values = [alpha, alpha * 0.5, 0.0]
         opacityAnimation.keyTimes = [0.0, NSNumber(value: keyTimeForHalfOpacity), 1.0]
         
-        animationGroup = CAAnimationGroup()
         animationGroup.animations = [scaleAnimation, opacityAnimation]
+        
+        if self.currentAnimation == .opacity {
+            pulse.borderColor = UIColor.clear.cgColor
+            pulse.borderWidth = 0.0
+            pulse.backgroundColor = self.backgroundColor
+        }
+        else {
+            pulse.borderColor = self.lineColor.cgColor
+            pulse.borderWidth = self.lineWidth
+            pulse.backgroundColor = UIColor.clear.cgColor
+        }
+        
         animationGroup.duration = animationDuration + pulseInterval
         animationGroup.repeatCount = repeatCount
         if let timingFunction = timingFunction {
